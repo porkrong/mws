@@ -72,7 +72,7 @@ type Submit struct {
 }
 
 func NewClient(config mws.Config) (*Submit, error) {
-	upload := new(v)
+	upload := new(Submit)
 	base, err := mws.NewClient(config, upload.Version(), upload.Name())
 	if err != nil {
 		return nil, err
