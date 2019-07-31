@@ -114,7 +114,7 @@ func (o Submit) UploadProduct() (rsp *mws.Response, err error) {
 	x.Message.Product.DescriptionData.RecommendedBrowseNode = "1981004031"
 	b, err := xml.MarshalIndent(x, "", "    ")
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return
 	}
 	b = []byte(strings.TrimSpace(xml.Header + string(b)))
@@ -238,7 +238,6 @@ func (o Submit) GetFeedSubmissionResult(FeedSubmissionId string) (result map[str
 
 	rsp, err := o.SendRequest(params)
 	if err != nil {
-		fmt.Println(3434)
 		return
 	}
 	if rsp.Error != nil {
@@ -416,7 +415,7 @@ func (o Submit) buildXMLRequest(body []byte, structuredParams mws.Parameters) (*
 		o.EndPoint()+"?"+encodedParams,
 		bytes.NewBuffer(body),
 	)
-	fmt.Println(encodedParams)
+	//fmt.Println(encodedParams)
 	if err != nil {
 		return nil, err
 	}
@@ -425,7 +424,7 @@ func (o Submit) buildXMLRequest(body []byte, structuredParams mws.Parameters) (*
 	//req.Header.Add("Content-Type", fmt.Sprintf("%v", "text/xml; charset=iso-8859-1"))
 	req.Header.Add("Content-Type", fmt.Sprintf("%v", "text/xml"))
 	req.Header.Add("Accept", "application/xml")
-	fmt.Println(o.Host)
+	//fmt.Println(o.Host)
 	req.Header.Add("Host", o.Client.Host)
 	//body = []byte("AWSAccessKeyId=AKIAIDH5ZZXVEUKJMEVA&Action=SubmitFeed&FeedType=_POST_FLAT_FILE_LISTINGS_DATA_&MWSAuthToken=amzn.mws.a4b4182e-02ba-5bc7-6b26-1ab2dd11f244&SellerId=A22SW78TJZH24R&Signature=Ys15EN1rx5iiHW7EzSpsSnJVU7nWgRx9nn%2F50QtDeqM%3D&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2019-07-25T04%3A01%3A26Z&Version=2009-01-01")
 	//body = []byte{}
@@ -433,14 +432,14 @@ func (o Submit) buildXMLRequest(body []byte, structuredParams mws.Parameters) (*
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("md5-content", content_md5_str)
+	//fmt.Println("md5-content", content_md5_str)
 	req.Header.Add("Content-MD5", content_md5_str)
 
 	return req, nil
 }
 
 func content_md5(body []byte) (content_md5 string, err error) {
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 	h := md5.New()
 	h.Write(body)
 	content_md5 = base64.StdEncoding.EncodeToString(h.Sum(nil))
