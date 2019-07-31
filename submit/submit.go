@@ -269,6 +269,8 @@ func (o Submit) GetFeedSubmissionResult(FeedSubmissionId string) (result map[str
 	return
 }
 
+var DataParseFail error = errors.New("数据解析出错")
+
 func (o Submit) SubmitTpl(list []interface{}) (result map[string]interface{}, err error) {
 	buf := NewBuffer()
 	obj := NewCSV(buf)
@@ -283,7 +285,7 @@ func (o Submit) SubmitTpl(list []interface{}) (result map[string]interface{}, er
 	for _, row := range list {
 		rowData, ok := row.(map[string]interface{})
 		if !ok {
-			err = errors.New("数据格式有误")
+			err = DataParseFail
 			return
 		}
 		l := make([]string, header_len)
