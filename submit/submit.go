@@ -66,13 +66,13 @@ func init() {
 	}
 }
 
-type Upload struct {
+type Submit struct {
 	*mws.Client
 	config mws.Config
 }
 
-func NewClient(config mws.Config) (*Upload, error) {
-	upload := new(Upload)
+func NewClient(config mws.Config) (*Submit, error) {
+	upload := new(v)
 	base, err := mws.NewClient(config, upload.Version(), upload.Name())
 	if err != nil {
 		return nil, err
@@ -83,18 +83,18 @@ func NewClient(config mws.Config) (*Upload, error) {
 }
 
 // Version return the current version of api
-func (o Upload) Version() string {
+func (o Submit) Version() string {
 	return ""
 }
 
 // Name return the name of the api
-func (o Upload) Name() string {
+func (o Submit) Name() string {
 	return ""
 }
 
 // GetServiceStatus Returns the operational status of the Orders API section.
 // http://docs.developer.amazonservices.com/en_US/orders/2013-09-01/MWS_GetServiceStatus.html
-func (o Upload) GetServiceStatus() (*mws.Response, error) {
+func (o Submit) GetServiceStatus() (*mws.Response, error) {
 	params := mws.Parameters{
 		"Action": "GetServiceStatus",
 	}
@@ -102,7 +102,7 @@ func (o Upload) GetServiceStatus() (*mws.Response, error) {
 	return o.SendRequest(params)
 }
 
-func (o Upload) UploadProduct() (rsp *mws.Response, err error) {
+func (o Submit) UploadProduct() (rsp *mws.Response, err error) {
 	x := NewProductXml()
 	x.Header.MerchantIdentifier = o.SellerId
 	x.Message.MessageID = fmt.Sprintf("%v,", rand.New(rand.NewSource(time.Now().UnixNano())).Int())
@@ -122,19 +122,19 @@ func (o Upload) UploadProduct() (rsp *mws.Response, err error) {
 	return
 }
 
-func (o Upload) UpdatePrice() {
+func (o Submit) UpdatePrice() {
 
 }
 
-func (o Upload) UpdateImg() {
+func (o Submit) UpdateImg() {
 
 }
 
-func (o Upload) UpdateQuantity() {
+func (o Submit) UpdateQuantity() {
 
 }
 
-func (o Upload) GetFeedSubmissionList(FeedSubmissionIds ...string) (result map[string]interface{}, err error) {
+func (o Submit) GetFeedSubmissionList(FeedSubmissionIds ...string) (result map[string]interface{}, err error) {
 	if len(FeedSubmissionIds) == 0 {
 		return nil, errors.New("请输入FeedSubmissionIds")
 	}
@@ -183,7 +183,7 @@ func (o Upload) GetFeedSubmissionList(FeedSubmissionIds ...string) (result map[s
 	return
 }
 
-func (o Upload) GetFeedSubmissionListByNextToken(NextToken string) (result map[string]interface{}, err error) {
+func (o Submit) GetFeedSubmissionListByNextToken(NextToken string) (result map[string]interface{}, err error) {
 	if NextToken == "" {
 		err = errors.New("NextToken 不能为空")
 		return
@@ -230,7 +230,7 @@ func (o Upload) GetFeedSubmissionListByNextToken(NextToken string) (result map[s
 	return
 }
 
-func (o Upload) GetFeedSubmissionResult(FeedSubmissionId string) (result map[string]interface{}, err error) {
+func (o Submit) GetFeedSubmissionResult(FeedSubmissionId string) (result map[string]interface{}, err error) {
 	params := mws.Parameters{
 		"Action":           "GetFeedSubmissionResult",
 		"FeedSubmissionId": FeedSubmissionId,
@@ -269,7 +269,7 @@ func (o Upload) GetFeedSubmissionResult(FeedSubmissionId string) (result map[str
 	return
 }
 
-func (o Upload) SubmitTpl(list []map[string]string) (result map[string]interface{}, err error) {
+func (o Submit) SubmitTpl(list []map[string]string) (result map[string]interface{}, err error) {
 	buf := NewBuffer()
 	obj := NewCSV(buf)
 	obj.SetDelimiter("\t")
@@ -327,7 +327,7 @@ func (o Upload) SubmitTpl(list []map[string]string) (result map[string]interface
 	return
 }
 
-func (o Upload) SubmitFeed(feedType string, body []byte) (rsp *mws.Response, err error) {
+func (o Submit) SubmitFeed(feedType string, body []byte) (rsp *mws.Response, err error) {
 
 	//构建请求query信息
 	params := mws.Parameters{
@@ -340,7 +340,7 @@ func (o Upload) SubmitFeed(feedType string, body []byte) (rsp *mws.Response, err
 	return
 }
 
-func (o Upload) SendRequest(structuredParams mws.Parameters) (*mws.Response, error) {
+func (o Submit) SendRequest(structuredParams mws.Parameters) (*mws.Response, error) {
 	request, err := o.buildRequest(structuredParams)
 	if err != nil {
 		return nil, err
@@ -354,7 +354,7 @@ func (o Upload) SendRequest(structuredParams mws.Parameters) (*mws.Response, err
 	return mws.NewResponse(resp), nil
 }
 
-func (o Upload) buildRequest(structuredParams mws.Parameters) (*http.Request, error) {
+func (o Submit) buildRequest(structuredParams mws.Parameters) (*http.Request, error) {
 	params, err := structuredParams.Normalize()
 	if err != nil {
 		return nil, err
@@ -378,7 +378,7 @@ func (o Upload) buildRequest(structuredParams mws.Parameters) (*http.Request, er
 	return req, nil
 }
 
-func (o Upload) SendXMl(body []byte, structuredParams mws.Parameters) (*mws.Response, error) {
+func (o Submit) SendXMl(body []byte, structuredParams mws.Parameters) (*mws.Response, error) {
 	//构建mws xml请求
 	request, err := o.buildXMLRequest(body, structuredParams)
 	if err != nil {
@@ -394,7 +394,7 @@ func (o Upload) SendXMl(body []byte, structuredParams mws.Parameters) (*mws.Resp
 }
 
 //构建请求信息
-func (o Upload) buildXMLRequest(body []byte, structuredParams mws.Parameters) (*http.Request, error) {
+func (o Submit) buildXMLRequest(body []byte, structuredParams mws.Parameters) (*http.Request, error) {
 	params, err := structuredParams.Normalize()
 	if err != nil {
 		return nil, err
@@ -441,7 +441,7 @@ func content_md5(body []byte) (content_md5 string, err error) {
 }
 
 // signQuery generate the signature and add the signature to the http parameters.
-func (o Upload) signQuery(params mws.Values) mws.Values {
+func (o Submit) signQuery(params mws.Values) mws.Values {
 	//"SellerId":         o.SellerId,
 	//	"MWSAuthToken":     o.AuthToken,
 	//	"SignatureMethod":  o.SignatureMethod(),
@@ -467,14 +467,14 @@ func (o Upload) signQuery(params mws.Values) mws.Values {
 }
 
 // signature generate the signature by the parameters and the secretKey using HmacSHA256.
-func (o Upload) generateSignature(params mws.Values) string {
+func (o Submit) generateSignature(params mws.Values) string {
 	stringToSign := o.generateStringToSignV2(params)
 	signature2 := mws.SignV2(stringToSign, o.config.SecretKey)
 	return signature2
 }
 
 // generateStringToSignV2 Generate the string to sign for the query.
-func (o Upload) generateStringToSignV2(params mws.Values) string {
+func (o Submit) generateStringToSignV2(params mws.Values) string {
 	var stringToSign bytes.Buffer
 	stringToSign.WriteString("POST\n")
 	stringToSign.WriteString(o.Host)
