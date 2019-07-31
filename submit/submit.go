@@ -269,7 +269,7 @@ func (o Submit) GetFeedSubmissionResult(FeedSubmissionId string) (result map[str
 	return
 }
 
-func (o Submit) SubmitTpl(list []map[string]string) (result map[string]interface{}, err error) {
+func (o Submit) SubmitTpl(list []interface{}) (result map[string]interface{}, err error) {
 	buf := NewBuffer()
 	obj := NewCSV(buf)
 	obj.SetDelimiter("\t")
@@ -281,11 +281,16 @@ func (o Submit) SubmitTpl(list []map[string]string) (result map[string]interface
 	obj.InsertOne(header)
 	header_len := len(header)
 	for _, row := range list {
+		rowData, ok := row.(map[string]interface{})
+		if !ok {
+			err = errors.New("数据格式有误")
+			return
+		}
 		l := make([]string, header_len)
-		for index, col := range row {
+		for index, col := range rowData {
 			key, ok := keys[index]
 			if ok {
-				l[key] = col
+				l[key] = fmt.Sprintf("%v", col)
 			}
 		}
 		obj.InsertOne(l)
